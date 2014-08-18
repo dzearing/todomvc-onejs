@@ -1,0 +1,4 @@
+interface IAppRootModel {
+}
+
+export = IAppRootModel;
