@@ -80,6 +80,8 @@ define(["require", "exports", 'ViewModel', 'List', 'TodoModel'], function(requir
             for (var i = 0; i < this.todos.getCount(); i++) {
                 this.todos.getAt(i).setData({ isCompleted: allOn });
             }
+
+            return false;
         };
 
         AppRootModel.prototype.removeTodo = function (todo) {
