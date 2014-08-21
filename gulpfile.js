@@ -12,6 +12,7 @@ var cssMinify = require('gulp-minify-css');
 var csstojs = require('gulp-csstojs');
 var filter = require('gulp-filter');
 var size = require('gulp-size');
+var rjs = require('requirejs');
 
 var paths = {
     tempPath: 'temp',
@@ -49,9 +50,23 @@ gulp.task('tsc', ['tsc-preprocess'], function() {
         .pipe(gulp.dest(paths.appPath));
 });
 
-gulp.task('minify', ['tsc'], function() {
-    return gulp.src( [paths.appPath + '/*.js' ])
-        .pipe(uglify())
+gulp.task('rjs', ['tsc'], function(cb) {
+    rjs.optimize({
+        baseUrl: paths.appPath,
+        dir: paths.tempPath + '/rjs',
+        optimize: 'uglify2',
+        modules: [
+        {
+            name: 'main'
+        }]
+    }, function(buildResponse) {
+        console.log(buildResponse);
+        cb();
+    }, cb);
+});
+
+gulp.task('minify', ['rjs'], function() {
+    return gulp.src([paths.tempPath + '/rjs/main.js' ])
         .pipe(size({gzip: true }))
         .pipe(gulp.dest(paths.appMinPath ));
 });

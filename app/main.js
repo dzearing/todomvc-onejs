@@ -1,4 +1,4 @@
-define(["require", "exports", 'AppRoot'], function(require, exports, AppRoot) {
+define(["require", "exports", 'TodoApp'], function(require, exports, TodoApp) {
     if (document.body) {
         initialize();
     } else {
@@ -6,7 +6,7 @@ define(["require", "exports", 'AppRoot'], function(require, exports, AppRoot) {
     }
 
     function initialize() {
-        var app = new AppRoot();
+        var app = new TodoApp();
         var body = document.body;
 
         // Wire up dispose on unload.
@@ -21,7 +21,6 @@ define(["require", "exports", 'AppRoot'], function(require, exports, AppRoot) {
 
         body.appendChild(app.renderElement());
 
-        //body.innerHTML = app.renderHtml();
         app.activate();
     }
 });

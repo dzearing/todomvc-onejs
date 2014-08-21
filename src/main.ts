@@ -1,4 +1,4 @@
-import AppRoot = require('AppRoot');
+import TodoApp = require('TodoApp');
 
 if (document.body) {
     initialize();
@@ -8,7 +8,7 @@ else {
 }
 
 function initialize() {
-    var app = new AppRoot();
+    var app = new TodoApp();
     var body = document.body;
 
     // Wire up dispose on unload.
@@ -23,6 +23,5 @@ function initialize() {
 
     body.appendChild(app.renderElement());
 
-    //body.innerHTML = app.renderHtml();
     app.activate();
 }
