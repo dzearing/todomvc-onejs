@@ -1,0 +1,4 @@
+interface ITodoAppModel {
+}
+
+export = ITodoAppModel;
