@@ -71,6 +71,8 @@ class AppRootModel extends ViewModel {
         for (var i =0; i < this.todos.getCount(); i++) {
             this.todos.getAt(i).setData({ isCompleted: allOn });
         }
+
+        return false;
     }
 
     removeTodo(todo) {
