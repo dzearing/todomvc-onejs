@@ -37,7 +37,7 @@ define(["require", "exports", 'EventGroup'], function(require, exports, EventGro
 
             this.array[index] = item;
 
-            if (item) {
+            if (item && EventGroup.isDeclared(item, CHANGE_EVENT)) {
                 this.events.on(item, CHANGE_EVENT, this.childChange);
             }
 
@@ -53,7 +53,8 @@ define(["require", "exports", 'EventGroup'], function(require, exports, EventGro
 
         List.prototype.insertAt = function (index, item) {
             this.array.splice(index, 0, item);
-            if (item) {
+
+            if (item && EventGroup.isDeclared(item, CHANGE_EVENT)) {
                 this.events.on(item, CHANGE_EVENT, this.childChange);
             }
             this.change({ type: 'insert', index: index, item: item });

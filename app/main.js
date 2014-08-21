@@ -19,7 +19,9 @@ define(["require", "exports", 'AppRoot'], function(require, exports, AppRoot) {
             app.resize();
         });
 
-        body.innerHTML = app.renderHtml();
+        body.appendChild(app.renderElement());
+
+        //body.innerHTML = app.renderHtml();
         app.activate();
     }
 });

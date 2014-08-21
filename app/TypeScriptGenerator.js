@@ -52,13 +52,17 @@ define(["require", "exports", './BaseGenerator'], function(require, exports, Bas
             this._addProperties(template);
             this._addOnInitialize(template);
             this._addOnViewModelChanged(template);
-            this._addOnRenderHtml(template);
+            this._addOnRenderElement(template);
+
+            //this._addOnRenderHtml(template);
             this._addAnnotations(template);
             this._addLine('}');
         };
 
         TypeScriptGenerator.prototype._addImports = function (template) {
-            var uniqueControlTypes = { 'View': {} };
+            var uniqueControlTypes = {
+                'View': {}
+            };
 
             uniqueControlTypes[template.baseViewType] = template;
 
@@ -219,6 +223,60 @@ define(["require", "exports", './BaseGenerator'], function(require, exports, Bas
         _this._addLine('}', 1);
         }
         */
+        TypeScriptGenerator.prototype._addOnRenderElement = function (template) {
+            var _this = this;
+
+            _this._addLine();
+            _this._addLine('onRenderElement(): HTMLElement {', 1);
+            _this._addLine('var _this = this;', 2);
+            _this._addLine('var bindings = _this._bindings;', 2);
+            _this._addLine();
+
+            this._addChildElements(template.documentElement, 2);
+
+            _this._addLine('}', 1);
+        };
+
+        TypeScriptGenerator.prototype._addChildElements = function (element, indent) {
+            var isRoot = element.tagName === 'js-view';
+            var leadingAssignment = isRoot ? 'return (_this.element = ' : '';
+
+            for (var i = 0; i < element.childNodes.length; i++) {
+                var childNode = element.childNodes[i];
+                var annotations = childNode['annotation'];
+                var bindings = annotations ? ('bindings[' + annotations.id + ']') : null;
+                var trailingComma = (i == element.childNodes.length - 1) ? (isRoot ? ');' : '') : ',';
+
+                if (childNode.tagName === 'js-view') {
+                    this._addLine(leadingAssignment + '_this.' + childNode.getAttribute('js-name') + '.renderElement()' + trailingComma, indent);
+                } else if (childNode.nodeType === element.ELEMENT_NODE) {
+                    var attributes = [];
+                    for (var attrIndex = 0; attrIndex < childNode.attributes.length; attrIndex++) {
+                        attributes.push(childNode.attributes[attrIndex].name);
+                        attributes.push(childNode.attributes[attrIndex].value);
+                    }
+
+                    var hasChildren = childNode.childNodes.length > 0;
+                    var childSuffix = hasChildren ? ', [' : (')' + trailingComma);
+                    var renderChildren = hasChildren;
+
+                    if (hasChildren && childNode.childNodes[0].tagName == 'js-items') {
+                        renderChildren = false;
+                        childSuffix = ', this.getChildElements())' + trailingComma;
+                    }
+
+                    this._addLine(leadingAssignment + "_this._ce(\"" + childNode.tagName + "\", " + JSON.stringify(attributes) + (bindings || hasChildren ? (", " + bindings) : '') + childSuffix, indent);
+
+                    if (renderChildren) {
+                        this._addChildElements(childNode, indent + 1);
+                        this._addLine("])" + trailingComma, indent);
+                    }
+                } else if (childNode.nodeType === element.TEXT_NODE) {
+                    this._addLine("_this._ct(" + JSON.stringify(childNode.textContent) + ")" + trailingComma, indent);
+                }
+            }
+        };
+
         TypeScriptGenerator.prototype._addOnRenderHtml = function (template) {
             var _this = this;
 
@@ -232,13 +290,27 @@ define(["require", "exports", './BaseGenerator'], function(require, exports, Bas
             _this._addLine('}', 1);
         };
 
+        TypeScriptGenerator.prototype._addChildNodes = function (element, indent) {
+            for (var i = 0; i < element.childNodes.length; i++) {
+                var childNode = element.childNodes[i];
+
+                if (childNode.nodeType === element.ELEMENT_NODE) {
+                    this._addRenderLine(childNode, indent);
+                } else if (childNode.nodeType === element.TEXT_NODE) {
+                    var text = childNode.textContent.trim();
+                    if (text) {
+                        //this._addLine("'" + Encode.toHtml(text) + "' +", indent);
+                        this._addLine("'" + _toHtml(text) + "' +", indent);
+                    }
+                }
+            }
+        };
+
         TypeScriptGenerator.prototype._addRenderLine = function (element, indent) {
             var _this = this;
 
             if (element.tagName === 'js-view') {
                 _this._addLine('this.' + element.getAttribute('js-name') + '.renderHtml() +', indent);
-            } else if (element.tagName === 'js-items') {
-                _this._addLine('this.renderItems() + ', indent);
             } else {
                 var nodeType = element.nodeType;
                 var tagName = element.tagName;
@@ -272,22 +344,6 @@ define(["require", "exports", './BaseGenerator'], function(require, exports, Bas
             }
 
             return shouldRenderChildNodes;
-        };
-
-        TypeScriptGenerator.prototype._addChildNodes = function (element, indent) {
-            for (var i = 0; i < element.childNodes.length; i++) {
-                var childNode = element.childNodes[i];
-
-                if (childNode.nodeType === element.ELEMENT_NODE) {
-                    this._addRenderLine(childNode, indent);
-                } else if (childNode.nodeType === element.TEXT_NODE) {
-                    var text = childNode.textContent.trim();
-                    if (text) {
-                        //this._addLine("'" + Encode.toHtml(text) + "' +", indent);
-                        this._addLine("'" + _toHtml(text) + "' +", indent);
-                    }
-                }
-            }
         };
 
         TypeScriptGenerator.prototype._addAnnotations = function (template) {

@@ -10,21 +10,20 @@ DomUtils.loadStyles(AppRootcss.styles);
 class AppRootBlock0Item extends View {
     viewName = 'AppRootBlock0Item';
 
-    onRenderHtml(): string {
-        return '' +
-            '<li id="' + this.id + '_0" ' + this._genClass('', ['completed','todo.isCompleted','editing','todo.isEditing']) + '>' +
-                '<div class="view">' +
-                    '<input id="' + this.id + '_1" ' + this._genAttr('', ['checked','todo.isCompleted']) + ' class="toggle" type="checkbox"></input>' +
-                    '<label id="' + this.id + '_2">' +
-                        this._genText('todo.title') +
-                    '</label>' +
-                    '<button id="' + this.id + '_3" class="destroy"></button>' +
-                '</div>' +
-                '<form id="' + this.id + '_4">' +
-                    '<input id="' + this.id + '_5" ' + this._genAttr('', ['value','todo.title']) + ' class="edit" todo-escape="revertEditing(todo)" ng-blur="doneEditing(todo)" todo-focus="todo == editedTodo"></input>' +
-                '</form>' +
-            '</li>' +
-            '';
+    onRenderElement(): HTMLElement {
+        var _this = this;
+        var bindings = _this._bindings;
+
+        return (_this.element = _this._ce("li", [], bindings[0], [
+            _this._ce("div", ["class","view"], null, [
+                _this._ce("input", ["class","toggle","type","checkbox"], bindings[1]),
+                _this._ce("label", [], bindings[2]),
+                _this._ce("button", ["class","destroy"], bindings[3])
+            ]),
+            _this._ce("form", [], bindings[4], [
+                _this._ce("input", ["class","edit","todo-escape","revertEditing(todo)","ng-blur","doneEditing(todo)","todo-focus","todo == editedTodo"], bindings[5])
+            ])
+        ]));
     }
 
     _bindings = [
@@ -80,12 +79,11 @@ class AppRootBlock0 extends Repeater {
     childViewType = AppRootBlock0Item;
     itemName = "todo";
 
-    onRenderHtml(): string {
-        return '' +
-            '<ul id="' + this.id + '_0" class="todo-list">' +
-                this.renderItems() + 
-            '</ul>' +
-            '';
+    onRenderElement(): HTMLElement {
+        var _this = this;
+        var bindings = _this._bindings;
+
+        return (_this.element = _this._ce("ul", ["class","todo-list"], bindings[0], this.getChildElements()));
     }
 
     _bindings = [
@@ -111,68 +109,67 @@ class AppRoot extends AppRootBase {
         this.appRootBlock0.setData({ items: this.getValue('todos') });
     }
 
-    onRenderHtml(): string {
-        return '' +
-            '<section class="todoapp">' +
-                '<header class="header">' +
-                    '<h1>' +
-                        'todos' +
-                    '</h1>' +
-                    '<form id="' + this.id + '_0" class="todo-form">' +
-                        '<input id="' + this.id + '_1" ' + this._genAttr('', ['value','newTodo']) + ' class="new-todo" placeholder="What needs to be done?"></input>' +
-                    '</form>' +
-                '</header>' +
-                '<section id="' + this.id + '_2" ' + this._genClass('main', ['visible','todos.getCount']) + '>' +
-                    '<input id="' + this.id + '_3" ' + this._genAttr('', ['checked','areAllComplete']) + ' class="toggle-all" type="checkbox"></input>' +
-                    '<label for="toggle-all">' +
-                        'Mark all as complete' +
-                    '</label>' +
-                    this.appRootBlock0.renderHtml() +
-                '</section>' +
-                '<footer id="' + this.id + '_4" ' + this._genClass('footer', ['visible','todos.getCount']) + '>' +
-                    '<span id="' + this.id + '_5" class="todo-count">' +
-                        this._genHtml('undefined') +
-                    '</span>' +
-                    '<ul class="filters">' +
-                        '<li>' +
-                            '<a id="' + this.id + '_6" ' + this._genClass('', ['selected','allSelected']) + ' href="#/">' +
-                                'All' +
-                            '</a>' +
-                        '</li>' +
-                        '<li>' +
-                            '<a id="' + this.id + '_7" ' + this._genClass('', ['selected','activeSelected']) + ' href="#/active">' +
-                                'Active' +
-                            '</a>' +
-                        '</li>' +
-                        '<li>' +
-                            '<a id="' + this.id + '_8" ' + this._genClass('', ['selected','completedSelected']) + ' href="#/completed">' +
-                                'Completed' +
-                            '</a>' +
-                        '</li>' +
-                    '</ul>' +
-                    '<button id="' + this.id + '_9" ' + this._genClass('clear-completed', ['visible','completedCount']) + '>' +
-                        this._genText('completedCountMessage') +
-                    '</button>' +
-                '</footer>' +
-            '</section>' +
-            '<footer class="info">' +
-                '<p>' +
-                    'Double-click to edit a todo' +
-                '</p>' +
-                '<p>' +
-                    'Credits:' +
-                    '<a href="http://github.com/dzearing">' +
-                        'David Zearing' +
-                    '</a>' +
-                '</p>' +
-                '<p>' +
-                    'Part of' +
-                    '<a href="http://todomvc.com">' +
-                        'TodoMVC' +
-                    '</a>' +
-                '</p>' +
-            '</footer>' +
-            '';
+    onRenderElement(): HTMLElement {
+        var _this = this;
+        var bindings = _this._bindings;
+
+        return (_this.element = _this._ce("div", ["class","approot"], null, [
+            _this._ce("section", ["class","todoapp"], null, [
+                _this._ce("header", ["class","header"], null, [
+                    _this._ce("h1", [], null, [
+                        _this._ct("todos")
+                    ]),
+                    _this._ce("form", ["class","todo-form"], bindings[0], [
+                        _this._ce("input", ["class","new-todo","placeholder","What needs to be done?"], bindings[1])
+                    ])
+                ]),
+                _this._ce("section", ["class","main"], bindings[2], [
+                    _this._ce("input", ["class","toggle-all","type","checkbox"], bindings[3]),
+                    _this._ce("label", ["for","toggle-all"], null, [
+                        _this._ct("Mark all as complete")
+                    ]),
+                    _this.appRootBlock0.renderElement()
+                ]),
+                _this._ce("footer", ["class","footer"], bindings[4], [
+                    _this._ce("span", ["class","todo-count"], bindings[5]),
+                    _this._ce("ul", ["class","filters"], null, [
+                        _this._ce("li", [], null, [
+                            _this._ce("a", ["href","#/"], bindings[6], [
+                                _this._ct("All")
+                            ])
+                        ]),
+                        _this._ce("li", [], null, [
+                            _this._ce("a", ["href","#/active"], bindings[7], [
+                                _this._ct("Active")
+                            ])
+                        ]),
+                        _this._ce("li", [], null, [
+                            _this._ce("a", ["href","#/completed"], bindings[8], [
+                                _this._ct("Completed")
+                            ])
+                        ])
+                    ]),
+                    _this._ce("button", ["class","clear-completed"], bindings[9])
+                ])
+            ]),
+            _this._ce("footer", ["class","info"], null, [
+                _this._ce("p", [], null, [
+                    _this._ct("Double-click to edit a todo")
+                ]),
+                _this._ce("p", [], null, [
+                    _this._ct("Credits:\r\n        "),
+                    _this._ce("a", ["href","http://github.com/dzearing"], null, [
+                        _this._ct("David Zearing")
+                    ])
+                ]),
+                _this._ce("p", [], null, [
+                    _this._ct("Part of "),
+                    _this._ce("a", ["href","http://todomvc.com"], null, [
+                        _this._ct("TodoMVC")
+                    ])
+                ])
+            ])
+        ]));
     }
 
     _bindings = [
