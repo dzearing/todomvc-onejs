@@ -49,7 +49,6 @@ define(["require", "exports", 'ViewModel', 'EventGroup', 'DomUtils'], function(r
 
         View.prototype.onInitialize = function () {
         };
-
         View.prototype.onRenderElement = function () {
             this.element = this._ce('div');
         };
@@ -412,6 +411,8 @@ define(["require", "exports", 'ViewModel', 'EventGroup', 'DomUtils'], function(r
 
                     this._lastValues[key] = newValue;
                     this.setValue(binding.attr[source], newValue);
+
+                    return false;
                 });
             }
         };
